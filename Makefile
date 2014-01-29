@@ -341,9 +341,10 @@ CHECK		= sparse
 
 CHECKFLAGS     := -D__linux__ -Dlinux -D__STDC__ -Dunix -D__unix__ \
 		  -Wbitwise -Wno-return-void $(CF)
-CFLAGS_MODULE   =
-AFLAGS_MODULE   =
-LDFLAGS_MODULE  = --strip-debug
+MODFLAGS	= -DMODULE
+CFLAGS_MODULE   = -fno-pic
+AFLAGS_MODULE   = $(MODFLAGS)
+LDFLAGS_MODULE  = -T $(srctree)/scripts/module-common.lds --strip-debug
 CFLAGS_KERNEL	=
 AFLAGS_KERNEL	=
 CFLAGS_GCOV	= -fprofile-arcs -ftest-coverage
@@ -378,6 +379,10 @@ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -fno-delete-null-pointer-checks \
 		   -std=gnu89
 
+# arter97's optimizations
+KBUILD_CFLAGS	+= -s -pipe -Ofast -mcpu=cortex-a15 -mtune=cortex-a15 -mfloat-abi=hard -mfpu=vfpv4 -fno-tree-vectorize -fno-schedule-insns2 -fmodulo-sched -fmodulo-sched-allow-regmoves -fno-inline-functions
+# -Wno-unused
+KBUILD_CFLAGS	+= -Wno-unused
 KBUILD_AFLAGS_KERNEL :=
 KBUILD_CFLAGS_KERNEL :=
 KBUILD_AFLAGS   := -D__ASSEMBLY__
@@ -651,8 +656,6 @@ ifndef CONFIG_FUNCTION_TRACER
 KBUILD_CFLAGS	+= -fomit-frame-pointer
 endif
 endif
-
-KBUILD_CFLAGS   += $(call cc-option, -fno-var-tracking-assignments)
 
 ifdef CONFIG_DEBUG_INFO
 KBUILD_CFLAGS	+= -g
