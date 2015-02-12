@@ -233,6 +233,7 @@ struct fg_chip {
 	struct mutex		rw_lock;
 	struct work_struct	batt_profile_init;
 	struct work_struct	dump_sram;
+	struct work_struct	status_change_work;
 	struct power_supply	*batt_psy;
 	bool			profile_loaded;
 	bool			use_otp_profile;
@@ -247,6 +248,8 @@ struct fg_chip {
 	unsigned int		batt_max_voltage_uv;
 	const char		*batt_type;
 	unsigned long		last_sram_update_time;
+	unsigned long		last_temp_update_time;
+	int			status;
 };
 
 /* FG_MEMIF DEBUGFS structures */
@@ -1176,6 +1179,18 @@ static int fg_power_get_property(struct power_supply *psy,
 	return 0;
 }
 
+static void status_change_work(struct work_struct *work)
+{
+	struct fg_chip *chip = container_of(work,
+				struct fg_chip,
+				status_change_work);
+
+	if ((chip->status == POWER_SUPPLY_STATUS_FULL ||
+			chip->status == POWER_SUPPLY_STATUS_CHARGING)
+			&& get_prop_capacity(chip) == 100)
+		fg_configure_soc(chip);
+}
+
 static int fg_power_set_property(struct power_supply *psy,
 				  enum power_supply_property psp,
 				  const union power_supply_propval *val)
@@ -1198,8 +1213,8 @@ static int fg_power_set_property(struct power_supply *psy,
 			update_sram_data(chip, &unused);
 		break;
 	case POWER_SUPPLY_PROP_STATUS:
-		if (val->intval == POWER_SUPPLY_STATUS_FULL)
-			rc = fg_configure_soc(chip);
+		chip->status = val->intval;
+		schedule_work(&chip->status_change_work);
 		break;
 	default:
 		return -EINVAL;
@@ -1858,6 +1873,7 @@ static int fg_remove(struct spmi_device *spmi)
 	cancel_delayed_work_sync(&chip->update_jeita_setting);
 	cancel_work_sync(&chip->batt_profile_init);
 	cancel_work_sync(&chip->dump_sram);
+	cancel_work_sync(&chip->status_change_work);
 	power_supply_unregister(&chip->bms_psy);
 	dev_set_drvdata(&spmi->dev, NULL);
 	return 0;
@@ -2401,6 +2417,9 @@ static int fg_probe(struct spmi_device *spmi)
 			batt_profile_init);
 	INIT_WORK(&chip->dump_sram, dump_sram);
 	init_completion(&chip->sram_access);
+	INIT_WORK(&chip->status_change_work, status_change_work);
+	init_completion(&chip->sram_access_granted);
+	init_completion(&chip->sram_access_revoked);
 	init_completion(&chip->batt_id_avail);
 	dev_set_drvdata(&spmi->dev, chip);
 
@@ -2529,6 +2548,13 @@ cancel_jeita_work:
 	cancel_delayed_work_sync(&chip->update_jeita_setting);
 power_supply_unregister:
 	power_supply_unregister(&chip->bms_psy);
+cancel_work:
+	cancel_delayed_work_sync(&chip->update_jeita_setting);
+	cancel_delayed_work_sync(&chip->update_sram_data);
+	cancel_delayed_work_sync(&chip->update_temp_work);
+	cancel_work_sync(&chip->batt_profile_init);
+	cancel_work_sync(&chip->dump_sram);
+	cancel_work_sync(&chip->status_change_work);
 of_init_fail:
 	mutex_destroy(&chip->rw_lock);
 	return rc;
