@@ -584,6 +584,14 @@ config MSM_PERFORMANCE_HOTPLUG_ON
           msm_performance.
 
 
+config MSM_LIMITER
+	bool "MSM Frequency Limiter Driver"
+	default y
+	help
+	  The MSM Frequency Limiter Driver controls max frequency limit for each CPU
+	  to desired value on suspend/resume
+
+
 source "drivers/soc/qcom/memshare/Kconfig"
 
 config BOOTINFO
