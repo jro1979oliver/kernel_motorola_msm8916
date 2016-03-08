@@ -253,8 +253,6 @@ end:
 }
 
 static struct shrinker zcache_shrinker = {
-	.scan_objects = zcache_scan,
-	.count_objects = zcache_count,
 	.seeks = DEFAULT_SEEKS * 16
 };
 
