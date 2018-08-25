@@ -99,7 +99,7 @@ static struct workqueue_struct *lazyplug_boost_wq;
 static unsigned int __read_mostly lazyplug_active = 1;
 module_param(lazyplug_active, uint, 0664);
 
-static unsigned int __read_mostly touch_boost_active = 1;
+static unsigned int __read_mostly touch_boost_active = 0;
 module_param(touch_boost_active, uint, 0664);
 
 static unsigned int __read_mostly nr_run_profile_sel = 0;
@@ -569,8 +569,6 @@ int __init lazyplug_init(void)
 	rc = input_register_handler(&lazyplug_input_handler);
 
 	state_notifier_hook.notifier_call = state_notifier_call;
-	if (state_register_client(&state_notifier_hook))
-		pr_info("%s state_notifier hook create failed!\n", __FUNCTION__);
 
 	lazyplug_wq = alloc_workqueue("lazyplug",
 				WQ_HIGHPRI | WQ_UNBOUND, 1);
