@@ -14,6 +14,9 @@ obj-$(CONFIG_CPU_FREQ_GOV_LIONFISH)	+= cpufreq_lionfish.o
 obj-$(CONFIG_CPU_FREQ_GOV_COMMON)		+= cpufreq_governor.o
 obj-$(CONFIG_CPU_BOOST)			+= cpu-boost.o
 
+# CPU Input Boost
+obj-$(CONFIG_CPU_INPUT_BOOST)		+= cpu_input_boost.o
+
 obj-$(CONFIG_GENERIC_CPUFREQ_CPU0)	+= cpufreq-cpu0.o
 
 ##################################################################################
