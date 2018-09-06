@@ -432,6 +432,9 @@ extern struct cpufreq_governor cpufreq_gov_conservative;
 #elif defined(CONFIG_CPU_FREQ_DEFAULT_GOV_INTERACTIVE)
 extern struct cpufreq_governor cpufreq_gov_interactive;
 #define CPUFREQ_DEFAULT_GOVERNOR	(&cpufreq_gov_interactive)
+#elif defined(CONFIG_CPU_FREQ_DEFAULT_GOV_INTERACTIVE_PRO)
+extern struct cpufreq_governor cpufreq_interactive_pro;
+#define CPUFREQ_DEFAULT_GOVERNOR	(&cpufreq_interactive_pro)
 #elif defined(CONFIG_CPU_FREQ_DEFAULT_GOV_BLU_ACTIVE)
 extern struct cpufreq_governor cpufreq_gov_blu_active;
 #define CPUFREQ_DEFAULT_GOVERNOR	(&cpufreq_gov_blu_active)
