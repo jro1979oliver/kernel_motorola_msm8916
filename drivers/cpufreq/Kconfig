@@ -131,6 +131,15 @@ config CPU_FREQ_DEFAULT_GOV_INTERACTIVE_PRO
 	help
 	Use the CPUFreq governor 'interactive_pro' as default.
 
+config CPU_FREQ_DEFAULT_GOV_BLU_ACTIVE
+	bool "blu_active"
+	select CPU_FREQ_GOV_BLU_ACTIVE
+	help
+	  Use the CPUFreq governor 'blu_active' as default. This allows
+	  you to get a full dynamic cpu frequency capable system by simply
+	  loading your cpufreq low-level hardware driver, using the
+	  'interactive' governor for latency-sensitive workloads.
+
 config CPU_FREQ_DEFAULT_GOV_LIONFISH
 	bool "lionfish"
 	select CPU_FREQ_GOV_LIONFISH
