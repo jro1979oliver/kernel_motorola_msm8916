@@ -156,6 +156,10 @@ config CPU_FREQ_DEFAULT_GOV_ALUCARD
  	bool "alucard"
  	select CPU_FREQ_GOV_ALUCARD
 
+config CPU_FREQ_DEFAULT_GOV_YANKACTIVE
+ 	bool "yankactive"
+ 	select CPU_FREQ_GOV_YANKACTIVE
+
 endchoice
 
 config CPU_FREQ_GOV_PERFORMANCE
@@ -319,6 +323,12 @@ config CPU_FREQ_GOV_ALUCARD
  	tristate "'alucard' cpufreq governor"
  	depends on CPU_FREQ
 	default y
+
+config CPU_FREQ_GOV_YANKACTIVE
+ 	tristate "'yankactive' cpufreq policy governor"
+	default y
+ 	help
+   	  'yankactive' - This driver adds a dynamic cpufreq policy governor designed for latency-sensitive workloads. The governor is based on interactive with just different default settings and can be achieved using interactive with a script. This is added for simplification purposes for myself. 
 
 config CPU_BOOST
 	tristate "Event base short term CPU freq boost"
