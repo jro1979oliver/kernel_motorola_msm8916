@@ -19,6 +19,7 @@ obj-$(CONFIG_CPU_FREQ_GOV_PEGASUSQ)	+= cpufreq_pegasusq.o
 obj-$(CONFIG_CPU_FREQ_GOV_ALUCARD) 	+= cpufreq_alucard.o
 obj-$(CONFIG_CPU_FREQ_GOV_YANKACTIVE)	+= cpufreq_yankactive.o
 obj-$(CONFIG_CPU_FREQ_GOV_TRIPNDROID)	+= cpufreq_tripndroid.o
+obj-$(CONFIG_CPU_FREQ_GOV_IMPULSE)     += cpufreq_impulse.o
 obj-$(CONFIG_CPU_BOOST)			+= cpu-boost.o
 
 # CPU Input Boost
