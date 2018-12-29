@@ -56,8 +56,8 @@
 
 #define POLLING_DELAY 100
 
-unsigned int temperature_threshold = 60;
-module_param(temperature_threshold, int, 0755);
+unsigned int temp_threshold = 60;
+module_param(temp_threshold, int, 0755);
 
 static struct msm_thermal_data msm_thermal_info;
 static struct delayed_work check_temp_work;
@@ -2631,7 +2631,7 @@ static void do_freq_control(long temp)
 	if (!freq_table_get)
 		return;
 
-	if (temp >= temperature_threshold) {
+	if (temp >= temp_threshold) {
 		if (limit_idx == limit_idx_low)
 			return;
 
@@ -2639,7 +2639,7 @@ static void do_freq_control(long temp)
 		if (limit_idx < limit_idx_low)
 			limit_idx = limit_idx_low;
 		max_freq = table[limit_idx].frequency;
-	} else if (temp < temperature_threshold - msm_thermal_info.temp_hysteresis_degC) {
+	} else if (temp < temp_threshold - msm_thermal_info.temp_hysteresis_degC) {
 		if (limit_idx == limit_idx_high)
 			return;
 
@@ -3885,22 +3885,6 @@ static struct kernel_param_ops module_ops = {
 
 module_param_cb(enabled, &module_ops, &enabled, 0644);
 MODULE_PARM_DESC(enabled, "enforce thermal limit on cpu");
-
-module_param_named(poll_ms, msm_thermal_info.poll_ms, uint, 0664);
- /* Temp Threshold */
-module_param_named(core_temp_limit_degC, msm_thermal_info.core_limit_temp_degC,
-		   uint, 0644);
-module_param_named(hotplug_temp_degC, msm_thermal_info.hotplug_temp_degC,
-		   uint, 0644);
-module_param_named(freq_mitig_temp_degc,
-		   msm_thermal_info.freq_mitig_temp_degc, uint, 0644);
- /* Control Mask */
-module_param_named(freq_control_mask,
-		   msm_thermal_info.bootup_freq_control_mask, uint, 0644);
-module_param_named(core_control_mask, msm_thermal_info.core_control_mask,
-			uint, 0664);
-module_param_named(freq_mitig_control_mask,
-		   msm_thermal_info.freq_mitig_control_mask, uint, 0644);
 
 static ssize_t show_cc_enabled(struct kobject *kobj,
 		struct kobj_attribute *attr, char *buf)
