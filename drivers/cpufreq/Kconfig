@@ -187,6 +187,14 @@ config CPU_FREQ_DEFAULT_GOV_CHILL
 	  governor. If unsure have a look at the help section of the
 	  driver. Fallback governor will be the interactive governor.
 
+config CPU_FREQ_DEFAULT_GOV_ADAPTIVE
+	bool "adaptive"
+	select CPU_FREQ_GOV_ADAPTIVE
+	---help---
+	'adaptive' - This driver adds a dynamic cpufreq policy governor
+	designed for latency-sensitive workloads and also for demanding
+	performance.
+
 endchoice
 
 config CPU_FREQ_GOV_PERFORMANCE
@@ -382,6 +390,14 @@ config CPU_FREQ_GOV_CHILL
 	help
 	  'chill' - similar to 'conservative', but optimized for devices
 	  that go into suspended or display off states often.
+
+config CPU_FREQ_GOV_ADAPTIVE
+	tristate "'adaptive' cpufreq policy governor"
+	default y
+	---help---
+	  'adaptive' - This driver adds a dynamic cpufreq policy governor
+	  designed for latency-sensitive workloads and also for demanding
+	  performance.
 
 config CPU_BOOST
 	tristate "Event base short term CPU freq boost"
