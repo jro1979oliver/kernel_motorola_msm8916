@@ -1,14 +1,14 @@
 echo "Setting Up environment variables"
 printf '\n'
 KERNEL_DIR=$PWD
-DEFCONFIG=harpia_defconfig
-Anykernel_DIR=$KERNEL_DIR/AnyKernel2/harpia
+DEFCONFIG=lux_defconfig
+Anykernel_DIR=$KERNEL_DIR/AnyKernel2/lux
 TOOLCHAINDIR=$(pwd)/../toolchain/linaro-4.9
 HEAD=$(git rev-parse --short HEAD)
 KERNEL_NAME="BLEEDING_EDGE-NG"
-DEVICE="-harpia-"
-VER="-v0.1-"
-TYPE="10"
+DEVICE="-lux-"
+VER="-v1-"
+TYPE="TEN"
 FINAL_ZIP="$KERNEL_NAME""$DEVICE""$TYPE""$VER""$HEAD".zip
 FULL_ZIP_PATH="$Anykernel_DIR"/"$FINAL_ZIP"
 # key= bot api key
@@ -16,7 +16,7 @@ FULL_ZIP_PATH="$Anykernel_DIR"/"$FINAL_ZIP"
 
 export ARCH=arm
 export KBUILD_BUILD_USER="jro1979oliver"
-export KBUILD_BUILD_HOST="corona_place"
+export KBUILD_BUILD_HOST="coronas_place"
 export USE_CCACHE=1
 
 function senddocument {
