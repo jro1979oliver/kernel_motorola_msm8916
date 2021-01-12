@@ -312,7 +312,7 @@ endif
 
 # Motorola 8939 merlin
 ifeq ($(CONFIG_MMI_DTB_MERLIN),y)
-dtb-$(CONFIG_ARCH_MSM8916) += msm8939-merlin-p0.dtb
+#dtb-$(CONFIG_ARCH_MSM8916) += msm8939-merlin-p0.dtb
 dtb-$(CONFIG_ARCH_MSM8916) += msm8939-merlin-p1.dtb
 dtb-$(CONFIG_ARCH_MSM8916) += msm8939-merlin-p1v3.dtb
 endif
