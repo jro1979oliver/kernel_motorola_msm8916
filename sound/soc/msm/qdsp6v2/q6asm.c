@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2019, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2012-2017, 2019, The Linux Foundation. All rights reserved.
  * Author: Brian Swetland <swetland@google.com>
  *
  * This software is licensed under the terms of the GNU General Public
@@ -1335,8 +1335,8 @@ static int32_t q6asm_srvc_callback(struct apr_client_data *data, void *priv)
 	uint32_t dir = 0;
 	uint32_t i = IN;
 	uint32_t *payload;
-	unsigned long dsp_flags = 0;
-	unsigned long flags = 0;
+	unsigned long dsp_flags;
+	unsigned long flags;
 	struct asm_buffer_node *buf_node = NULL;
 	struct list_head *ptr, *next;
 
@@ -1459,9 +1459,6 @@ static int32_t q6asm_srvc_callback(struct apr_client_data *data, void *priv)
 	dir = (data->token & 0x0F);
 	if (dir != IN && dir != OUT) {
 		pr_err("%s: Invalid audio port index: %d\n", __func__, dir);
-		if ((sid > 0 && sid <= SESSION_MAX))
-			spin_unlock_irqrestore(
-				&(session[sid].session_lock), flags);
 		return 0;
 	}
 	port = &ac->port[dir];
@@ -1662,10 +1659,8 @@ static int32_t q6asm_callback(struct apr_client_data *data, void *priv)
 	    (data->opcode != ASM_DATA_EVENT_EOS) &&
 	    (data->opcode != ASM_SESSION_EVENTX_OVERFLOW) &&
 	    (data->opcode != ASM_SESSION_EVENT_RX_UNDERFLOW)) {
-		if (payload == NULL ||
-			(data->payload_size < (2 * sizeof(uint32_t)))) {
-			pr_err("%s: payload is null or invalid size[%d]\n",
-				__func__, data->payload_size);
+		if (payload == NULL) {
+			pr_err("%s: payload is null\n", __func__);
 			spin_unlock_irqrestore(
 				&(session[session_id].session_lock), flags);
 			return -EINVAL;
@@ -1819,7 +1814,7 @@ static int32_t q6asm_callback(struct apr_client_data *data, void *priv)
 			if (data->token < 0 ||
 					data->token >= port->max_buf_cnt) {
 				pr_debug("%s: Invalid token buffer index %u\n",
-				__func__, data->token);
+					__func__, data->token);
 				spin_unlock_irqrestore(&port->dsp_lock,
 								dsp_flags);
 				spin_unlock_irqrestore(
@@ -1909,7 +1904,7 @@ static int32_t q6asm_callback(struct apr_client_data *data, void *priv)
 			token = data->token;
 			if (token < 0 || token >= port->max_buf_cnt) {
 				pr_debug("%s: Invalid token buffer index %u\n",
-				__func__, token);
+					__func__, token);
 				spin_unlock_irqrestore(&port->dsp_lock,
 								dsp_flags);
 				spin_unlock_irqrestore(
@@ -3212,12 +3207,6 @@ int q6asm_enc_cfg_blk_pcm_v2(struct audio_client *ac,
 	u32 frames_per_buf = 0;
 
 	int rc = 0;
-
-	if (!use_default_chmap && (channel_map == NULL)) {
-		pr_err("%s: No valid chan map and can't use default\n",
-				__func__);
-		return -EINVAL;
-	}
 
 	if (channels > PCM_FORMAT_MAX_NUM_CHANNEL) {
 		pr_err("%s: Invalid channel count %d\n", __func__, channels);

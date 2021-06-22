@@ -3354,6 +3354,13 @@ wcnss_wlan_probe(struct platform_device *pdev)
 		return -ENOMEM;
 	}
 
+	penv->user_cal_data =
+		devm_kzalloc(&pdev->dev, MAX_CALIBRATED_DATA_SIZE, GFP_KERNEL);
+	if (!penv->user_cal_data) {
+		dev_err(&pdev->dev, "Failed to alloc memory for cal data.\n");
+		return -ENOMEM;
+	}
+
 	/* register sysfs entries */
 	ret = wcnss_create_sysfs(&pdev->dev);
 	if (ret) {

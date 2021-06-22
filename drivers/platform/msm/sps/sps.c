@@ -1342,7 +1342,6 @@ int sps_connect(struct sps_pipe *h, struct sps_connect *connect)
 		goto exit_err;
 	}
 
-	mutex_lock(&bam->lock);
 	SPS_DBG2("sps:sps_connect: bam %pa src 0x%pK dest 0x%pK mode %s",
 			BAM_ID(bam),
 			(void *)connect->source,

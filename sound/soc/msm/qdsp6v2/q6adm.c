@@ -1,4 +1,4 @@
-/* Copyright (c) 2012-2019 The Linux Foundation. All rights reserved.
+/* Copyright (c) 2012-2014, 2016, 2017, 2019 The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -1138,14 +1138,17 @@ static int32_t adm_callback(struct apr_client_data *data, void *priv)
 		switch (data->opcode) {
 		case ADM_CMDRSP_DEVICE_OPEN_V5:
 		case ADM_CMDRSP_DEVICE_OPEN_V6: {
-			struct adm_cmd_rsp_device_open_v5 *open = NULL;
+			struct adm_cmd_rsp_device_open_v5 *open =
+			(struct adm_cmd_rsp_device_open_v5 *)data->payload;
+
 			if (data->payload_size <
 				sizeof(struct adm_cmd_rsp_device_open_v5)) {
-				pr_err("%s: Invalid payload size %d\n", __func__,
-					data->payload_size);
+				pr_err("%s: Invalid payload size %d\n",
+					__func__, data->payload_size);
 				return 0;
 			}
-			open = (struct adm_cmd_rsp_device_open_v5 *)data->payload;
+			open =
+			    (struct adm_cmd_rsp_device_open_v5 *)data->payload;
 			if (open->copp_id == INVALID_COPP_ID) {
 				pr_err("%s: invalid coppid rxed %d\n",
 					__func__, open->copp_id);
